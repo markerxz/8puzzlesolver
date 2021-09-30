@@ -1,198 +1,265 @@
 #include<stdio.h>
-#include<algorithm>
+#include<map>
+#include<string.h>
+#include<iostream>
 #include<queue>
+#include<stack>
 using namespace std;
 
-int table[4][4];
-int frx,fry;
-struct realval{
-	int x,y;
-}endz[10],startz[10];
-int prevfx=69,prevfy=69;
+struct data{
+	int dx,md,val;
+	char from[10];
+	int owntable[4][4];
+	int freei,freej;
+	bool chc;
 
+	bool operator <(const data &a)const{
+		return a.val<val;
+	}
+	
+}d;
 
-void shwtbl ()
+struct sateeng{
+	char xx[10];
+}st;
+stack <sateeng> sx;
+
+priority_queue <data> q;
+map <string,data> m;
+
+struct tableset{
+	int i,j;
+}startz[10],endz[10];
+
+struct temp{
+	char xz[10];
+}t;
+temp inttostring (data d)
 {
-	printf("***********************\n");
+	char xz[10];
+	int a=0;
 	for(int i=0;i<=2;i++)
 	{
-		for(int j=0;j<=2;j++)
-		{
-			printf("%d ",table[i][j]);
-		}printf("\n");
+		for(int j=0;j<=2;j++,a++)
+		t.xz[a]=d.owntable[i][j]+'0';
 	}
-	printf("\n***********************\n");
+	return t;
 }
-void swap(int changex,int changey,int freex,int freey)
-{
-	table[freey][freex]=table[freey+changey][freex+changex];
-	table[freey+changey][freex+changex]=0;
-}
-void swapback(int changex,int changey,int freex,int freey)
-{
-	table[freey+changey][freex+changex]=table[freey][freex];
-	table[freey][freex]=0;
-	
-}
-int abs(int x)
+
+int abs (int x)
 {
 	if(x>0)
 	return x;
 	
 	return -x;
 }
-int impcal (int changex,int changey,int freex,int freey)
-{
 
-//	printf("chx = %d ; chy = %d ; frx = %d ; fry = %d\n",changex,changey,freex,freey);
-	swap(changex,changey,freex,freey);
+
+int mdcal(data d)
+{
 	int sum=0;
 	for(int i=0;i<=2;i++)
 	for(int j=0;j<=2;j++)
 	{
-		sum+=!(endz[table[i][j]].x==j and endz[table[i][j]].y==i);
-		sum+=!(startz[table[i][j]].x==j and startz[table[i][j]].y==i);
-	//	printf("i = %d ; j = %d ;; %d \nsum += %d + %d\n",i,j,table[i][j],v[table[i][j]].x-j,abs(v[table[i][j]].y-i));
+		sum+=abs(endz[d.owntable[i][j]].i-i)+abs(endz[d.owntable[i][j]].j-j);
 	}
-//	printf("sum = %d\n",sum);
 	
-	swapback(changex,changey,freex,freey);
-	return sum;
+	return sum;	
 }
-int gcal (int changex,int changey,int freex,int freey)
-{
 
-//	printf("chx = %d ; chy = %d ; frx = %d ; fry = %d\n",changex,changey,freex,freey);
-	swap(changex,changey,freex,freey);
-	int sum=0;
-	for(int i=0;i<=2;i++)
-	for(int j=0;j<=2;j++)
-	{
-		sum+=!(startz[table[i][j]].x==j and startz[table[i][j]].y==i);
-	//	printf("i = %d ; j = %d ;; %d \nsum += %d + %d\n",i,j,table[i][j],v[table[i][j]].x-j,abs(v[table[i][j]].y-i));
-	}
-//	printf("sum = %d\n",sum);
-	
-	swapback(changex,changey,freex,freey);
-	return sum;
-}
-int hcal (int changex,int changey,int freex,int freey)
+void shwtbl(data d)
 {
-
-//	printf("chx = %d ; chy = %d ; frx = %d ; fry = %d\n",changex,changey,freex,freey);
-	swap(changex,changey,freex,freey);
-	int sum=0;
+	printf("\n*****************\n");
 	for(int i=0;i<=2;i++)
-	for(int j=0;j<=2;j++)
 	{
-		sum+=!(endz[table[i][j]].x==j and endz[table[i][j]].y==i);
-	//	printf("i = %d ; j = %d ;; %d \nsum += %d + %d\n",i,j,table[i][j],v[table[i][j]].x-j,abs(v[table[i][j]].y-i));
-	}
-//	printf("sum = %d\n",sum);
-	
-	swapback(changex,changey,freex,freey);
-	return sum;
-}
-bool checkz()
-{
-	for(int i=0;i<=2;i++)
-	for(int j=0;j<=2;j++)
-	{
-		if(!(endz[table[i][j]].x==j and endz[table[i][j]].y==i))
+		for(int j=0;j<=2;j++)
 		{
-			return false;
-		}
-	}
-	return true;
+			printf("%d ",d.owntable[i][j]);
+				}		printf("\n");
+	}printf("*****************\n");
+	return ;
 }
-bool findway()
+
+bool findway (data datax)
 {
-	int chx,chy;
-	int prevg=0;
-	int impval=2e9;
-	int i,j;
-	//printf("** prfx = %d ; prfy = %d\n",prevfx,prevfy);
-	for(i=-1;i<=1;i++)
+	//shwtbl(datax);
+	if(mdcal(datax)==0)
 	{
-		for(j=-1;j<=1;j++)
+		return true;
+	}
+	
+	
+	for(int chi=-1;chi<=1;chi++)
+	for(int chj=-1;chj<=1;chj++)
+	{
+		if(chi!=chj)
+		if(abs(chi+chj)==1)
 		{
-			if(i!=j)
-			if(abs(i-j)==1)
+			if(datax.freei+chi>=0 and datax.freei<=2)
+			if(datax.freej+chj>=0 and datax.freej<=2)
 			{
-				if(frx+j>=0 and frx+j<=2)
-				if(fry+i>=0 and fry+i<=2)
-				{
-					//printf("frx+j = %d ; fry+i = %d\n",frx+j,fry+i);
-					if(!(frx+j==prevfx and fry+i==prevfy))
-					{
-						int tempg=gcal(j,i,frx,fry);
-						int temph=hcal(j,i,frx,fry);
-						if(tempg>prevg and tempg+temph<impval)
-						{		
-							impval=tempg+temph;
-							chx=j,chy=i;
-						}
-					}
+				int dd=0;
+					for(int ii=0;ii<=2;ii++)
+					for(int jj=0;jj<=2;jj++,dd++)
+					d.from[dd]=datax.owntable[ii][jj]+'0';
 					
+				datax.owntable[datax.freei][datax.freej]=datax.owntable[datax.freei+chi][datax.freej+chj];
+				datax.owntable[datax.freei+chi][datax.freej+chj]=0;
+				
+				if(!m[inttostring(datax).xz].chc)
+				{
+					d.dx=datax.dx+1;
+					d.md=mdcal(datax);
+					d.val=d.dx+d.md;
+					d.freei=datax.freei+chi;
+					d.freej=datax.freej+chj;
+					d.chc=true;
+					
+					
+					
+					
+					for(int ii=0;ii<=2;ii++)
+					for(int jj=0;jj<=2;jj++,dd++)
+					d.owntable[ii][jj]=datax.owntable[ii][jj];
+					
+					m[inttostring(d).xz]=d;
+					q.push(d);
 				}
+				
+				datax.owntable[datax.freei+chi][datax.freej+chj]=datax.owntable[datax.freei][datax.freej];
+				datax.owntable[datax.freei][datax.freej]=0;
 			}
 		}
 	}
-	printf("\nchx = %d ; chy = %d\n",chx,chy);
-	swap(chx,chy,frx,fry);
-	shwtbl();
-	prevfx=frx;
-	prevfy=fry;
-	frx=frx+chx;
-	fry=fry+chy;
-	return checkz();
+	
+	
+	
+	return false;
 }
-
+void creditz()
+{
+	printf("\n\n\n\n");
+	char xx[6][69]={"8-Puzzle Solver  ","\" project_num \"","version 4 (domanbu build)","by colormarked_","25/8/2019"};
+	for(int i=0;i<=4;i++)
+	printf("\t%s\n",xx[i]);
+}
+void printsx (sateeng sss)
+{
+	printf("\n******************\n");
+	for(int i=0;i<=2;i++)
+	{
+		for(int j=0;j<=2;j++)
+		printf("%c ",sss.xx[i*3+j]);
+		
+		printf("\n");
+	}
+	printf("\n******************\n");
+}
+char ww[10];
+char tt[10];
 main()
 {
-	//setval();
 	for(int i=0;i<=2;i++)
+	for(int j=0;j<=2;j++)
 	{
-		for(int j=0;j<=2;j++)
-		{	int z;
-			scanf("%d",&z);
-			endz[z].x=j;
-			endz[z].y=i;
-		}
+		int xz;
+		scanf("%d",&xz);
+		startz[xz].i=i;
+		startz[xz].j=j;
 		
-	}
-	
-	
-	for(int i=0;i<=2;i++)
-	{
-		for(int j=0;j<=2;j++)
+		d.owntable[i][j]=xz;
+		if(xz==0)
 		{
-			scanf("%d",&table[i][j]);
-			startz[table[i][j]].x=j,startz[table[i][j]].y=i;
-			if(table[i][j]==0)
+			d.freei=i;
+			d.freej=j;
+		}
+	}
+	d.from[0]='H';
+	d.from[1]='A';
+	d.from[2]='Y';
+	d.chc=true;
+	d.dx=0;
+	d.md=mdcal(d);
+	d.val=d.dx+d.md;
+	q.push(d);
+	m[inttostring(d).xz]=d;
+	for(int i=0;i<=2;i++)
+	for(int j=0;j<=2;j++)
+	{
+		int xz;
+		scanf("%d",&xz);
+		endz[xz].i=i;
+		endz[xz].j=j;
+	}
+/*	for(int i=0;i<=2;i++)
+	{
+		for(int j=0;j<=2;j++)
+		scanf("%d",&table[i][j]);
+	}
+//	char xz[10]=inttostring().xz;
+	printf("%s",inttostring().xz);
+*/	
+	while(!q.empty())
+	{
+		data temp = q.top();
+		q.pop();
+		if(findway(temp))
+		{
+			
+			int dd=0;
+			for(int ii=0;ii<=2;ii++)
+			for(int jj=0;jj<=2;jj++,dd++)
 			{
-				frx=j,fry=i;
+			ww[dd]=temp.owntable[ii][jj]+'0';	
+			st.xx[dd]=ww[dd];
 			}
+			sx.push(st);
+			
+			
+			while(m[ww].from[0]!='H')
+			{
+			//	printf("YO\n");
+			//	printf("%s\n",ww);
+				
+			
+				for(int i=0;i<=8;i++)
+				{
+				tt[i]=m[ww].from[i];	
+				st.xx[i]=tt[i];
+				
+				}//printf("stxx = %s\n",st.xx);
+				sx.push(st);
+				
+				for(int i=0;i<=8;i++)
+				ww[i]=tt[i];
+			}
+			
+			while(!sx.empty())
+			{
+//				sateeng ss;
+//				for(int i=0;i<=8;i++)
+//				ss.xx[i]=sx.top().xx[i];
+//				sx.pop();
+//				printf("%s\n\n",ss.xx);
+				printsx(sx.top());
+				sx.pop();
+			}
+			
+			creditz();
+			
+			return 0;
 		}
 		
 	}
-	while(1)
-	{
-		if(findway())
-		break;
-	}
+	
 }
 
-/* 1 2 3
-8 0 4
-7 6 5
-1 3 4
-8 0 5
-7 2 6*/
-
 /*
+
+1 2 3
+5 6 0
+7 8 4
 1 2 3
 4 5 6
-7 8 9
+7 8 0
 */
-
