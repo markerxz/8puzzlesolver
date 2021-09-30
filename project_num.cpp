@@ -7,25 +7,9 @@ int table[4][4];
 int frx,fry;
 struct realval{
 	int x,y;
-}v[10];
+}endz[10],startz[10];
 int prevfx=69,prevfy=69;
-void setval()
-{
-	int z=1;
-	for(int i=0;i<=2;i++)
-	{
-		for(int j=0;j<=2;j++)
-		{
-			v[z].x=j;
-			v[z].y=i;
-			printf("z = %d ; i = %d ; j = %d\n",z,v[z].y,v[z].x);
-			z++;
-		}
-	}
-	v[0].x=2;
-	v[0].y=2;
-	
-}
+
 
 void shwtbl ()
 {
@@ -57,7 +41,7 @@ int abs(int x)
 	
 	return -x;
 }
-int imp_val (int changex,int changey,int freex,int freey)
+int impcal (int changex,int changey,int freex,int freey)
 {
 
 //	printf("chx = %d ; chy = %d ; frx = %d ; fry = %d\n",changex,changey,freex,freey);
@@ -66,8 +50,8 @@ int imp_val (int changex,int changey,int freex,int freey)
 	for(int i=0;i<=2;i++)
 	for(int j=0;j<=2;j++)
 	{
-		sum+=abs(v[table[i][j]].x-j)+abs(v[table[i][j]].y-i);
-		
+		sum+=!(endz[table[i][j]].x==j and endz[table[i][j]].y==i);
+		sum+=!(startz[table[i][j]].x==j and startz[table[i][j]].y==i);
 	//	printf("i = %d ; j = %d ;; %d \nsum += %d + %d\n",i,j,table[i][j],v[table[i][j]].x-j,abs(v[table[i][j]].y-i));
 	}
 //	printf("sum = %d\n",sum);
@@ -75,8 +59,19 @@ int imp_val (int changex,int changey,int freex,int freey)
 	swapback(changex,changey,freex,freey);
 	return sum;
 }
-
-int findway()
+bool checkz()
+{
+	for(int i=0;i<=2;i++)
+	for(int j=0;j<=2;j++)
+	{
+		if(!(endz[table[i][j]].x==j and endz[table[i][j]].y==i))
+		{
+			return false;
+		}
+	}
+	return true;
+}
+bool findway()
 {
 	int chx,chy;
 	int impval=2e9;
@@ -95,7 +90,7 @@ int findway()
 					//printf("frx+j = %d ; fry+i = %d\n",frx+j,fry+i);
 					if(!(frx+j==prevfx and fry+i==prevfy))
 					{
-						int temp=imp_val(j,i,frx,fry);
+						int temp=impcal(j,i,frx,fry);
 						if(temp<impval)
 						{		
 							impval=temp;
@@ -114,7 +109,7 @@ int findway()
 	prevfy=fry;
 	frx=frx+chx;
 	fry=fry+chy;
-	return impval;
+	return checkz();
 }
 
 main()
@@ -125,8 +120,8 @@ main()
 		for(int j=0;j<=2;j++)
 		{	int z;
 			scanf("%d",&z);
-			v[z].x=j;
-			v[z].y=i;
+			endz[z].x=j;
+			endz[z].y=i;
 		}
 		
 	}
@@ -137,6 +132,7 @@ main()
 		for(int j=0;j<=2;j++)
 		{
 			scanf("%d",&table[i][j]);
+			startz[table[i][j]].x=j,startz[table[i][j]].y=i;
 			if(table[i][j]==0)
 			{
 				frx=j,fry=i;
@@ -146,13 +142,13 @@ main()
 	}
 	while(1)
 	{
-		if(findway()==0)
+		if(findway())
 		break;
 	}
 }
 /* 1 2 3
-8 0 4
-7 6 5
-1 3 4
-8 0 5
-7 2 6*/ 
+4 5 6
+7 8 0
+1 2 3
+0 4 6
+7 5 8*/ 
