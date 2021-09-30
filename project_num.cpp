@@ -5,21 +5,10 @@ using namespace std;
 
 int table[4][4];
 int frx,fry;
-struct inq{
-	int changex,changey,freex,freey;
-	int impval;
-	
-	bool operator <(const inq &a)const{
-		return a.impval<impval;
-	}
-
-}inq;
-
-priority_queue <struct inq> q;
 struct realval{
 	int x,y;
 }v[10];
-
+int prevfx=69,prevfy=69;
 void setval()
 {
 	int z=1;
@@ -40,7 +29,7 @@ void setval()
 
 void shwtbl ()
 {
-	printf("\n***********************\n");
+	printf("***********************\n");
 	for(int i=0;i<=2;i++)
 	{
 		for(int j=0;j<=2;j++)
@@ -48,7 +37,7 @@ void shwtbl ()
 			printf("%d ",table[i][j]);
 		}printf("\n");
 	}
-	printf("\n*************************\n\n");
+	printf("\n***********************\n");
 }
 void swap(int changex,int changey,int freex,int freey)
 {
@@ -70,23 +59,18 @@ int abs(int x)
 }
 int imp_val (int changex,int changey,int freex,int freey)
 {
-//	if(posix+changex>=0 and posix+changex<=2)
-//	{
-//		if(posi)
-//	}
-	shwtbl();
+
+//	printf("chx = %d ; chy = %d ; frx = %d ; fry = %d\n",changex,changey,freex,freey);
 	swap(changex,changey,freex,freey);
-	printf("swap!\n");
-	shwtbl();
 	int sum=0;
 	for(int i=0;i<=2;i++)
 	for(int j=0;j<=2;j++)
 	{
 		sum+=abs(v[table[i][j]].x-j)+abs(v[table[i][j]].y-i);
 		
-		printf("i = %d ; j = %d ;; %d \nsum += %d + %d\n",i,j,table[i][j],v[table[i][j]].x-j,abs(v[table[i][j]].y-i));
+	//	printf("i = %d ; j = %d ;; %d \nsum += %d + %d\n",i,j,table[i][j],v[table[i][j]].x-j,abs(v[table[i][j]].y-i));
 	}
-	printf("sum = %d\nswapback!\n",sum);
+//	printf("sum = %d\n",sum);
 	
 	swapback(changex,changey,freex,freey);
 	return sum;
@@ -97,6 +81,7 @@ int findway()
 	int chx,chy;
 	int impval=2e9;
 	int i,j;
+	//printf("** prfx = %d ; prfy = %d\n",prevfx,prevfy);
 	for(i=-1;i<=1;i++)
 	{
 		for(j=-1;j<=1;j++)
@@ -107,17 +92,26 @@ int findway()
 				if(frx+j>=0 and frx+j<=2)
 				if(fry+i>=0 and fry+i<=2)
 				{
-					if(imp_val(j,i,frx,fry)<impval)
-					{		
-						impval=imp_val(j,i,frx,fry);
-						chx=j,chy=i;
+					//printf("frx+j = %d ; fry+i = %d\n",frx+j,fry+i);
+					if(!(frx+j==prevfx and fry+i==prevfy))
+					{
+						int temp=imp_val(j,i,frx,fry);
+						if(temp<impval)
+						{		
+							impval=temp;
+							chx=j,chy=i;
+						}
 					}
+					
 				}
 			}
 		}
 	}
-	printf("\n\nmovej = %d ; movei = %d\n\n",chx,chy);
+	printf("\nchx = %d ; chy = %d\n",chx,chy);
 	swap(chx,chy,frx,fry);
+	shwtbl();
+	prevfx=frx;
+	prevfy=fry;
 	frx=frx+chx;
 	fry=fry+chy;
 	return impval;
@@ -125,7 +119,19 @@ int findway()
 
 main()
 {
-	setval();
+	//setval();
+	for(int i=0;i<=2;i++)
+	{
+		for(int j=0;j<=2;j++)
+		{	int z;
+			scanf("%d",&z);
+			v[z].x=j;
+			v[z].y=i;
+		}
+		
+	}
+	
+	
 	for(int i=0;i<=2;i++)
 	{
 		for(int j=0;j<=2;j++)
@@ -144,3 +150,9 @@ main()
 		break;
 	}
 }
+/* 1 2 3
+8 0 4
+7 6 5
+1 3 4
+8 0 5
+7 2 6*/ 
