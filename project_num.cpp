@@ -59,6 +59,40 @@ int impcal (int changex,int changey,int freex,int freey)
 	swapback(changex,changey,freex,freey);
 	return sum;
 }
+int gcal (int changex,int changey,int freex,int freey)
+{
+
+//	printf("chx = %d ; chy = %d ; frx = %d ; fry = %d\n",changex,changey,freex,freey);
+	swap(changex,changey,freex,freey);
+	int sum=0;
+	for(int i=0;i<=2;i++)
+	for(int j=0;j<=2;j++)
+	{
+		sum+=!(startz[table[i][j]].x==j and startz[table[i][j]].y==i);
+	//	printf("i = %d ; j = %d ;; %d \nsum += %d + %d\n",i,j,table[i][j],v[table[i][j]].x-j,abs(v[table[i][j]].y-i));
+	}
+//	printf("sum = %d\n",sum);
+	
+	swapback(changex,changey,freex,freey);
+	return sum;
+}
+int hcal (int changex,int changey,int freex,int freey)
+{
+
+//	printf("chx = %d ; chy = %d ; frx = %d ; fry = %d\n",changex,changey,freex,freey);
+	swap(changex,changey,freex,freey);
+	int sum=0;
+	for(int i=0;i<=2;i++)
+	for(int j=0;j<=2;j++)
+	{
+		sum+=!(endz[table[i][j]].x==j and endz[table[i][j]].y==i);
+	//	printf("i = %d ; j = %d ;; %d \nsum += %d + %d\n",i,j,table[i][j],v[table[i][j]].x-j,abs(v[table[i][j]].y-i));
+	}
+//	printf("sum = %d\n",sum);
+	
+	swapback(changex,changey,freex,freey);
+	return sum;
+}
 bool checkz()
 {
 	for(int i=0;i<=2;i++)
@@ -74,6 +108,7 @@ bool checkz()
 bool findway()
 {
 	int chx,chy;
+	int prevg=0;
 	int impval=2e9;
 	int i,j;
 	//printf("** prfx = %d ; prfy = %d\n",prevfx,prevfy);
@@ -90,10 +125,11 @@ bool findway()
 					//printf("frx+j = %d ; fry+i = %d\n",frx+j,fry+i);
 					if(!(frx+j==prevfx and fry+i==prevfy))
 					{
-						int temp=impcal(j,i,frx,fry);
-						if(temp<impval)
+						int tempg=gcal(j,i,frx,fry);
+						int temph=hcal(j,i,frx,fry);
+						if(tempg>prevg and tempg+temph<impval)
 						{		
-							impval=temp;
+							impval=tempg+temph;
 							chx=j,chy=i;
 						}
 					}
@@ -146,9 +182,17 @@ main()
 		break;
 	}
 }
+
 /* 1 2 3
-4 5 6
-7 8 0
+8 0 4
+7 6 5
+1 3 4
+8 0 5
+7 2 6*/
+
+/*
 1 2 3
-0 4 6
-7 5 8*/ 
+4 5 6
+7 8 9
+*/
+
