@@ -54,7 +54,6 @@ int abs (int x)
 	return -x;
 }
 
-
 int mdcal(data d)
 {
 	int sum=0;
@@ -82,13 +81,9 @@ void shwtbl(data d)
 
 bool findway (data datax)
 {
-	//shwtbl(datax);
 	if(mdcal(datax)==0)
-	{
-		return true;
-	}
-	
-	
+	return true;
+
 	for(int chi=-1;chi<=1;chi++)
 	for(int chj=-1;chj<=1;chj++)
 	{
@@ -115,9 +110,6 @@ bool findway (data datax)
 					d.freej=datax.freej+chj;
 					d.chc=true;
 					
-					
-					
-					
 					for(int ii=0;ii<=2;ii++)
 					for(int jj=0;jj<=2;jj++,dd++)
 					d.owntable[ii][jj]=datax.owntable[ii][jj];
@@ -132,17 +124,10 @@ bool findway (data datax)
 		}
 	}
 	
-	
-	
 	return false;
 }
-void creditz()
-{
-	printf("\n\n\n\n");
-	char xx[6][69]={"8-Puzzle Solver  ","\" project_num \"","version 4 (domanbu build)","by colormarked_","25/8/2019"};
-	for(int i=0;i<=4;i++)
-	printf("\t%s\n",xx[i]);
-}
+void creditz();
+
 void printsx (sateeng sss)
 {
 	printf("\n******************\n");
@@ -159,6 +144,7 @@ char ww[10];
 char tt[10];
 main()
 {
+	printf("Enter Initial Puzzle : \n");
 	for(int i=0;i<=2;i++)
 	for(int j=0;j<=2;j++)
 	{
@@ -175,14 +161,13 @@ main()
 		}
 	}
 	d.from[0]='H';
-	d.from[1]='A';
-	d.from[2]='Y';
 	d.chc=true;
 	d.dx=0;
 	d.md=mdcal(d);
 	d.val=d.dx+d.md;
 	q.push(d);
 	m[inttostring(d).xz]=d;
+	printf("Enter Result : \n");
 	for(int i=0;i<=2;i++)
 	for(int j=0;j<=2;j++)
 	{
@@ -191,14 +176,7 @@ main()
 		endz[xz].i=i;
 		endz[xz].j=j;
 	}
-/*	for(int i=0;i<=2;i++)
-	{
-		for(int j=0;j<=2;j++)
-		scanf("%d",&table[i][j]);
-	}
-//	char xz[10]=inttostring().xz;
-	printf("%s",inttostring().xz);
-*/	
+
 	while(!q.empty())
 	{
 		data temp = q.top();
@@ -218,16 +196,13 @@ main()
 			
 			while(m[ww].from[0]!='H')
 			{
-			//	printf("YO\n");
-			//	printf("%s\n",ww);
-				
-			
+
 				for(int i=0;i<=8;i++)
 				{
 				tt[i]=m[ww].from[i];	
 				st.xx[i]=tt[i];
 				
-				}//printf("stxx = %s\n",st.xx);
+				}
 				sx.push(st);
 				
 				for(int i=0;i<=8;i++)
@@ -236,11 +211,6 @@ main()
 			
 			while(!sx.empty())
 			{
-//				sateeng ss;
-//				for(int i=0;i<=8;i++)
-//				ss.xx[i]=sx.top().xx[i];
-//				sx.pop();
-//				printf("%s\n\n",ss.xx);
 				printsx(sx.top());
 				sx.pop();
 			}
@@ -249,16 +219,30 @@ main()
 			
 			return 0;
 		}
-		
-	}
 	
-}
+	}
 
+}
+void creditz()
+{
+	printf("\n\n\n\n");
+	char xx[6][69]={"8-Puzzle Solver  ","\" project_num \"","version 4 (domanbu build)","by colormarked_","25/8/2019","RobotClubKMITL"};
+	for(int i=0;i<=5;i++)
+	printf("\t%s\n",xx[i]);
+}
 /*
 
 1 2 3
 5 6 0
 7 8 4
+1 2 3
+4 5 6
+7 8 0
+*/
+/*
+8 3 7
+5 6 4
+2 0 1
 1 2 3
 4 5 6
 7 8 0
